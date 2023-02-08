@@ -1,12 +1,8 @@
 const mongoose=require('mongoose');
-// fName:"",
-// lName:"",
-// Mno:"",
-// email:"",
-// lNo:"",
-// Password:"",
-// cPassword:"",
-const adminSchema=new mongoose.Schema({
+const jwt=require("jsonwebtoken")
+
+const adminSchema=new mongoose.Schema(
+    {
     firstName:{
        type:String,
         required:true,
@@ -23,15 +19,24 @@ const adminSchema=new mongoose.Schema({
         type:String,
          required:true,
      },
-     libraryNo:{
-        type:Number,
-         required:true,
-     },
      Password:{
         type:String,
-         required:true,
+        //  required:true,
      },
-});
+     approvedReq:[
+        {
+            type:mongoose.Schema.ObjectId,
+            ref:"IssueBook"
+        }
+     ]
+}, {
+    timestamps: {
+      createdAt: "createdAt",
+      updatedAt: "updatedAt",
+    }
+},
+);
+
 
 const AdminData=new mongoose.model("AdminData",adminSchema);
 module.exports=AdminData;

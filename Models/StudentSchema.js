@@ -1,3 +1,4 @@
+
 const mongoose=require('mongoose');
 const StudentSchema=new mongoose.Schema({
     firstName:{
@@ -16,15 +17,22 @@ const StudentSchema=new mongoose.Schema({
         type:String,
          required:true,
      },
-     libraryNo:{
-        type:Number,
-         required:true,
-     },
      Password:{
         type:String,
-         required:true,
      },
-});
+     issuedBook:[
+      {
+        type:mongoose.Schema.ObjectId,
+        ref:"IssueBook"
+      }
+     ]
+},{
+    timestamps: {
+      createdAt: "createdAt",
+      updatedAt: "updatedAt",
+    },
+  }
+);
 
 const StudentData=new mongoose.model("StudentData",StudentSchema);
 module.exports=StudentData;
