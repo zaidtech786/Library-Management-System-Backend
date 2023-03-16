@@ -9,12 +9,13 @@ const upload=require('../MiddleWare/File')
 
     // Working on a book data
     router.post("/books" , async (req,res)=>{
-        const {bookName, Quantity, bookLang, bookAuthor} = req.body;
+        const {bookName, Quantity, bookLang, bookAuthor,bookPdf} = req.body;
         const bookData= new BookModel({
             bookName,
             Quantity,
             bookLang,
             bookAuthor,
+            bookPdf
         });
         console.log(bookData)
         try{
@@ -38,7 +39,7 @@ const upload=require('../MiddleWare/File')
       });
 
     // Delete the data
-      router.get("/delete/:id",async (req,res)=>{
+      router.delete("/delete/:id",async (req,res)=>{
         // const updatedvalue=req.body.updateVal;
         const id=req.params.id;
     try{
@@ -119,10 +120,7 @@ try{
 router.put("/acceptreq/:id",async(req,res) => {
     const {id} =req.params;
     const {bookId,adminId,studentId} = req.body
-    let book;
-    let student;
-    let admin;
-    let decBook;
+    let book,student,admin,decBook;
     try{ 
       book = await IssueBookModel.findByIdAndUpdate(id,{
         approved:true,
@@ -169,16 +167,22 @@ router.put("/acceptreq/:id",async(req,res) => {
 
 router.delete("/deletereq/:id",async(req,res) => {
     const {id} = req.params
-    let deleteBook;
+    let deleteBook,updateBook;
     try {
-        deleteBook = await IssueBookModel.findByIdAndRemove(id)
+        deleteBook = await IssueBookModel.findByIdAndRemove(id);
+        updateBook = await BookModel.findByIdAndUpdate(id,{
+            $inc: {Quantity: +1}
+           },{
+            new:true,
+            useFindAndModify:false
+          })
     } catch (error) {
         console.log(error)
     }
     if(!deleteBook){
         return res.send({msg:"NO BOOk Found"})
     }
-    return res.send({msg:"Book has been deleted",deleteBook})
+    return res.send({msg:"Book has been deleted",deleteBook,updateBook})
 })
 
 router.get("/getissuedbook/:studentId",async(req,res) => {

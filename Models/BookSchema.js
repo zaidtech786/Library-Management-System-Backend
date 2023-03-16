@@ -19,6 +19,10 @@ const bookSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    bookPdf: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: {
